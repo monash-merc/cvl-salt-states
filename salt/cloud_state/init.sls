@@ -1,6 +1,8 @@
 #!py
 
-deployment = 'test'
+deployment = grains['deployment']
+if deployment == None or deployment == '':
+  deployment = 'test'
 schedule = {'highstate': {'function': 'state.highstate',
                           'minutes': 3}}
 cloud_provider = 'nectar_monash'
@@ -8,7 +10,7 @@ availability_zone = 'monash-01'
 
 servers = {
     'cvlhomeserver': {
-        'count': 1
+        'count': 1,
         'roles': ['share_home'],
         'profile': 'centos65_monash',
         'volumes': [{
@@ -16,7 +18,7 @@ servers = {
                 'size': 1}]
     },
     'cvlsoftwareserver': {
-        'count': 0
+        'count': 0,
         'roles': ['share_usrlocal'],
         'profile': 'centos65_monash',
         'volumes': [{
@@ -24,17 +26,17 @@ servers = {
                 'size': 1}]
         },
     'cvlldap': {
-        'count': 0
+        'count': 0,
         'roles': ['ldap'],
         'profile': 'centos65_monash',
     },
     'cvllogin': {
-        'count': 0
+        'count': 0,
         'roles': ['login','scheduler'],
         'profile': 'centos65_monash',
     },
     'cvldesktop': {
-        'count': 0
+        'count': 0,
         'roles': ['desktop'],
         'profile': 'centos65_monash',
     },
