@@ -7,18 +7,37 @@ cloud_provider = 'nectar_monash'
 availability_zone = 'monash-01'
 
 servers = {
-    'nfs_homedirs': {
+    'cvlhomeserver': {
         'count': 1
-        'roles': ['nfs','homedirs'],
+        'roles': ['share_home'],
         'profile': 'centos65_monash',
-	'volumes': [{
-            'name': 'nfs_homedirs',
-            'size': 1}]
+        'volumes': [{
+                'name': 'cvlhomedirs',
+                'size': 1}]
     },
-#    'cvldesktop': {
-#        'roles': ['desktop'],
-#        'profile': 'centos65_monash',
-#    },
+    'cvlsoftwareserver': {
+        'count': 0
+        'roles': ['share_usrlocal'],
+        'profile': 'centos65_monash',
+        'volumes': [{
+                'name': 'cvlsoftwareserver',
+                'size': 1}]
+        },
+    'cvlldap': {
+        'count': 0
+        'roles': ['ldap'],
+        'profile': 'centos65_monash',
+    },
+    'cvllogin': {
+        'count': 0
+        'roles': ['login','scheduler'],
+        'profile': 'centos65_monash',
+    },
+    'cvldesktop': {
+        'count': 0
+        'roles': ['desktop'],
+        'profile': 'centos65_monash',
+    },
 }
 
 
