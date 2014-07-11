@@ -1,4 +1,7 @@
 base:
+  '*':
+     - ssh_server
+
   'roles:strudel_build':
      - match: grain
      - strudel_build
