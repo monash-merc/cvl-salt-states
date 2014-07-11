@@ -3,18 +3,22 @@
 deployment = 'test'
 schedule = {'highstate': {'function': 'state.highstate',
                           'minutes': 3}}
-cloud_provider = 'nova-nectar-msss-config'
 cloud_provider = 'nectar_monash'
 availability_zone = 'monash-01'
 
 servers = {
     'nfs_homedirs': {
+        'count': 1
         'roles': ['nfs','homedirs'],
         'profile': 'centos65_monash',
 	'volumes': [{
-            'name': 'nfs_homedirs_salt_test',
+            'name': 'nfs_homedirs',
             'size': 1}]
     },
+#    'cvldesktop': {
+#        'roles': ['desktop'],
+#        'profile': 'centos65_monash',
+#    },
 }
 
 
@@ -22,7 +26,7 @@ def run():
     config = {}
     for name, conf in servers.iteritems():
         count = conf.get('count', 1)
-        for i in range(1, 1 + count):
+        for i in range(0, count):
             config_name = "%s-%s-%d" % (deployment,
                                         name,
                                         i)
@@ -45,10 +49,11 @@ def run():
                             'deployment': deployment,
                             'roles': roles,
                         },
+                        'master': grains['ipv4'][0]
                     }},
                 ]}
             for vol in conf.get('volumes', []):
-                volname = "%s-%s" % (deployment, vol['name'])
+                volname = "%s-%s-%s" % (deployment, vol['name'],count)
                 config[volname + '-vol-present'] = {
                     'cloud.volume_present': [
                         {'name': volname},
