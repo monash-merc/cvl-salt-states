@@ -4,6 +4,7 @@ base:
 
   'salt-master':
      - cloud_state
+     - ssh_ca
 
   'roles:strudel_build':
      - match: grain
