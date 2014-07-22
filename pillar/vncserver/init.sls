@@ -4,6 +4,11 @@ vncserver:
   wm_pkg_name: 
     - xorg-x11-twm
     - xorg-x11-server-utils
+    - gnome-desktop
+    - gnome-session
+    - gnome-session-xsession
+    - libXcomposite
+    - libpng
   fonts:
     - xorg-x11-fonts-100dpi
     - xorg-x11-fonts-75dpi
