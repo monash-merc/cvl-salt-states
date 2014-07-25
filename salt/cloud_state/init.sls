@@ -36,7 +36,7 @@ servers = {
         'profile': 'centos65_monash',
     },
     'cvldesktop': {
-        'count': 0,
+        'count': 1,
         'roles': ['desktop'],
         'profile': 'centos65_monash',
     },
