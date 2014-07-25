@@ -9,4 +9,12 @@ it contains
 Assuming you have a computer with salt-master installed on it you need to 
 a) Configure a provider in /etc/salt/cloud.providers.d
 b) symlink /etc/salt/cloud.profiles.d to the profiles directory in this repo
-c) either configer /etc/salt-master to point base and pillars at the other directories, or symlink them as well
+c) either configer /etc/salt/master to point base and pillars at the other directories, or symlink them as well
+d) symlink the runners directory to /srv/runners as well
+d) edit /etc/salt/master to have:
+ runner_dirs: ['/srv/runners/']
+and:
+ peer_run:
+   .*:
+     - sshkeys.*
+
