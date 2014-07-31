@@ -8,3 +8,6 @@ base:
   'roles:vncserver':
      - match: grain
      - vncserver
+  'roles:desktop':
+     - match: grain
+     - desktop
