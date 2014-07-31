@@ -1,22 +1,21 @@
 base:
   '*':
-     - ssh_server
+     - sshtunnel
 
   'salt-master':
-     - cloud_state
      - ssh_ca
 
-  'roles:strudel_build':
-     - match: grain
-     - strudel_build
-
-  'roles:vncserver':
-     - match: grain
-     - vncserver
-
-  'roles:nfs':
-     - match: grain
-     - nfs
+#  'roles:strudel_build':
+#     - match: grain
+#     - strudel_build
+#
+#  'roles:vncserver':
+#     - match: grain
+#     - vncserver
+#
+#  'roles:nfs':
+#     - match: grain
+#     - nfs
 
   'roles:desktop':
      - match: grain
