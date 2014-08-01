@@ -1,8 +1,10 @@
 base:
   '*':
      - sshtunnel
+     - hosts
 
-  'salt-master':
+  'roles:config-managment':
+     - match: grain
      - ssh_ca
 
 #  'roles:strudel_build':
