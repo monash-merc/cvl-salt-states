@@ -11,7 +11,11 @@ sshtunnel:
 
 sshd:
   service.running:
+    {% if grains['os_family'] == 'Debian' %}
+    - name: ssh
+    {% elif grains['os_family'] == 'RedHat' %}
     - name: sshd
+    {% endif %}
     - watch:
       - file: sshhostcert
       - file: /etc/ssh/sshd_config
