@@ -19,7 +19,7 @@ start_autossh.py:
 
 start_autossh:
   cmd.run:
-    - name: python /usr/local/bin/start_autossh.py
+    - name: python /usr/local/bin/start_autossh.py /etc/autossh.conf
     - user: sshtunnel
     - require:
       - file: autossh.conf

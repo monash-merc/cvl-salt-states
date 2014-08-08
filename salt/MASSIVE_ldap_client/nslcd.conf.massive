@@ -1,0 +1,7 @@
+uid nslcd
+gid ldap
+uri ldaps://ldapproxy2.massive.org.au ldaps://ldapproxy.massive.org.au
+base dc=massive,dc=org,dc=au
+binddn cn=ldapbind,ou=localusers,dc=massive,dc=org,dc=au
+bindpw karaag3Ch1ck3n
+tls_cacertfile /etc/ldap/ldapproxy-ca.pem

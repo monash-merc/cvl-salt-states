@@ -1,6 +1,7 @@
 base:
   '*':
      - sshtunnel
+     - etc_sysconfig_network
      - hosts
 
   'roles:config-managment':
@@ -22,7 +23,16 @@ base:
   'roles:desktop':
      - match: grain
      - desktop
+     - munge
+
+  'roles:scheduler':
+     - match: grain
+     - munge
 
   'roles:share_home':
      - match: grain
      - share_home
+
+  'roles:massive_ldap_tunnel':
+     - match: grain
+     - massive_ldap_tunnel

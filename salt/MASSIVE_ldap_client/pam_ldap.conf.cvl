@@ -1,0 +1,10 @@
+base dc=cvl,dc=massive,dc=org,dc=au
+uri ldaps://ldap.cvl.massive.org.au/
+pam_password md5
+binddn cn=insecure,dc=cvl,dc=massive,dc=org,dc=au
+bindpw ldapclient
+pam_login_attribute uid
+tls_cacertdir /etc/openldap/cacerts
+tls_cacertfile /etc/openldap/certs/cacert.pem
+ssl no
+

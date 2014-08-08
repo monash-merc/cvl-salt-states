@@ -13,3 +13,8 @@ base:
   'roles:desktop':
      - match: grain
      - desktop
+     - munge
+
+  'roles:scheduler':
+     - match: grain
+     - munge
