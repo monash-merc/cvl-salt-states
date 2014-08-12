@@ -1,0 +1,14 @@
+
+ldap.conf:
+  file.managed
+  {% if grains['os_family'] == 'Debian' %}
+    - name: /etc/ldap/ldap.conf
+  {% elif grains['os_family'] == 'RedHat' %}
+    - name: /etc/openldap/ldap.conf
+  {% else %}
+    - name: /etc/ldap.conf
+  {% endif %}
+    - user: root
+    - group: root
+    - mode: 600
+    - source: salt://MASSIVE_ldap_client/ldap.conf
