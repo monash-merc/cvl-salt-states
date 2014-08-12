@@ -18,6 +18,14 @@ def get_servers(deployment):
         'roles': ['desktop'],
         'profile': 'centos65_monash',
     },
+    'gluster': {
+        'count': 8,
+        'roles': ['gluster_server'],
+        'profile': 'centos65_monash',
+        'volumes': [{
+                'name': 'gluster',
+                'size': 1}]
+    },
 }
     return servers
 
@@ -30,8 +38,15 @@ def write_userdata_file(filename,configname,domain):
 
 def run():
     config = {}
-    deployment = salt['grains.get']('deployment')
-    domain = salt['grains.get']('domain')
+    try:
+        deployment = salt['grains.get']('deployment')
+        domain = salt['grains.get']('domain')
+        master = grains['ipv4'][0]
+    except:
+        deployment="test"
+        domain="localdomain"
+        master = "localhost"
+
     if deployment == None or deployment == '':
       deployment = 'test'
     domain="massive.org.au"
@@ -59,11 +74,11 @@ def run():
                             'domain': domain,
                             'roles': roles,
                         },
-                        'master': grains['ipv4'][0]
+                        'master': master
                     }},
                 ]}
             for vol in conf.get('volumes', []):
-                volname = "%s-%s-%s" % (deployment, vol['name'],count)
+                volname = "%s-%s-%s" % (deployment, vol['name'],i)
                 config[volname + '-vol-present'] = {
                     'cloud.volume_present': [
                         {'name': volname},
@@ -85,3 +100,9 @@ def run():
                          },
                     ]}
     return config
+
+if __name__ == "__main__":
+    config=run()
+    for k in config.keys():
+        print config[k]
+

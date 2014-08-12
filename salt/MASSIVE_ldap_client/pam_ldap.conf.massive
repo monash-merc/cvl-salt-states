@@ -1,9 +1,0 @@
-base dc=massive,dc=org,dc=au
-uri ldaps://ldapproxy2.massive.org.au ldaps://ldapproxy.massive.org.au 
-pam_password md5
-binddn cn=ldapbind,ou=localusers,dc=massive,dc=org,dc=au
-bindpw karaag3Ch1ck3n
-pam_login_attribute uid
-tls_cacertdir /etc/ldap
-tls_cacertfile /etc/ldap/ldapproxy-ca.pem
-ssl no

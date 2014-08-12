@@ -24,14 +24,17 @@ base:
      - match: grain
      - desktop
      - munge
+     - massive_ldap_client
 
   'roles:scheduler':
      - match: grain
      - munge
+     - massive_ldap_client
 
   'roles:share_home':
      - match: grain
      - share_home
+     - massive_ldap_client
 
   'roles:massive_ldap_tunnel':
      - match: grain

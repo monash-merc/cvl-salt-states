@@ -28,9 +28,10 @@ sshtunnel_config_exists:
 sshtunnel_massive_config:
   file.blockreplace:
     - name: /var/sshtunnel/.ssh/config
-    - marker_start: # MASSIVE config managed by salt start
-    - marker_end: # MASSIVE config managed by salt end
-    - content: "Host m1-m.massive.org.au\n    User ssh_tunnel    IdentityFile /var/sshtunnel/.ssh/massive_key\n\nHost m2-m.massive.org.au\n    User ssh_tunnel\n    IdentityFile /var/sshtunnel/.ssh/massive_key"
+    - append_if_not_found: true
+    - marker_start: "# MASSIVE config managed by salt start"
+    - marker_end: "# MASSIVE config managed by salt end"
+    - content: "Host m1.massive.org.au\n    User ssh_tunnel\n    IdentityFile /var/sshtunnel/.ssh/massive_key\n\nHost m2.massive.org.au\n    User ssh_tunnel\n    IdentityFile /var/sshtunnel/.ssh/massive_key"
 
 massive_key:
   file.exists:
