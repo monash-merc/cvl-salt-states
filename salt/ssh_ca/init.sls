@@ -1,23 +1,39 @@
 #!py
-def loop_mine():
-    ipaddrs=" list of ipaddrs:\n"
-    for (server,addr) in salt['mine.get']('*','network.ip_addrs').items():
-        ipaddrs=ipaddrs+" server %s, address %s \n"%(server,addr)
-    function=['run',{'name':'echo %s'%ipaddrs}]
+
+def get_names(server,ipaddr_list):
+    for (name,addr) in ipaddr_list:
+        if name==server:
+            return "%s,%s"%(server,addr[0])
+
+def sign_key(server,key,names):
+    function=[]
+    function.append('run')
+    function.append({'name':'echo "%s" > /srv/salt/%s.pub && ssh-keygen -s /srv/host_ca_key -I host_ca -h -n %s /srv/salt/%s.pub'%(key,server,names,server)})
+    function.append({'require':[{'cmd':'create_known_hosts'}]})
+    function.append({'creates':"/srv/salt/%s-cert.pub"%server})
     return {'cmd':function}
 
-
-def set_hostkey_as_grain():
-    import subprocess
-    p=subprocess.Popen(['cat','/etc/ssh/ssh_host/ssh_host_rsa_key.pub'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,stdin=None)
-    (stdout,stderr)=p.communicate()
-    rsapubkey=stdout
-    function=['present',{'name':'ssh_host_rsa_key.pub'},{'value':'%s'%rsapubkey}]
-    return {'grains':function}
+def sign_user_key(server,key,names):
+    function=[]
+    function.append('run')
+    function.append({'name':'echo "%s" > /srv/salt/%s_sshtunnel.pub && ssh-keygen -s /srv/user_ca_key -I user_ca -n %s /srv/salt/%s_sshtunnel.pub'%(key,server,names,server)})
+    function.append({'require':[{'cmd':'create_known_hosts'}]})
+    function.append({'creates':"/srv/salt/%s_sshtunnel-cert.pub"%server})
+    return {'cmd':function}
 
 
 def run():
     config={}
-#    config['hostkey_grain'] = set_hostkey_as_grain() 
-    config['test'] = loop_mine()
+    config['include']=['.hostca','.userca']
+    servers=salt['publish.runner']('manage.up')
+    ipaddr_list = salt['mine.get']('*','network.ip_addrs').items()
+    hostkeys=salt['publish.runner']('sshkeys.get_host_keys')
+    userkeys=salt['publish.runner']('sshkeys.get_sshtunnel_keys')
+    for server in servers:
+        names=get_names(server,ipaddr_list)
+        if hostkeys.has_key(server):
+            config['sign_%s'%server] = sign_key(server,hostkeys[server],names)
+        names='sshtunnel'
+        if userkeys.has_key(server):
+            config['sign_sshtunnel_%s'%server] = sign_user_key(server,userkeys[server],names)
     return config

@@ -1,50 +1,56 @@
 #!py
 
-deployment = grains['deployment']
-if deployment == None or deployment == '':
-  deployment = 'test'
-schedule = {'highstate': {'function': 'state.highstate',
-                          'minutes': 3}}
 cloud_provider = 'nectar_monash'
 availability_zone = 'monash-01'
+def get_servers(deployment):
 
-servers = {
-    'cvlhomeserver': {
+    servers = {
+    'login': {
         'count': 1,
-        'roles': ['share_home'],
+        'roles': ['login','scheduler','massive_ldap_tunnel','share_home','share_usrlocal'],
         'profile': 'centos65_monash',
         'volumes': [{
                 'name': 'cvlhomedirs',
                 'size': 1}]
     },
-    'cvlsoftwareserver': {
-        'count': 0,
-        'roles': ['share_usrlocal'],
-        'profile': 'centos65_monash',
-        'volumes': [{
-                'name': 'cvlsoftwareserver',
-                'size': 1}]
-        },
-    'cvlldap': {
-        'count': 0,
-        'roles': ['ldap'],
-        'profile': 'centos65_monash',
-    },
-    'cvllogin': {
-        'count': 0,
-        'roles': ['login','scheduler'],
-        'profile': 'centos65_monash',
-    },
-    'cvldesktop': {
+    'desktop': {
         'count': 1,
         'roles': ['desktop'],
         'profile': 'centos65_monash',
     },
+    'gluster': {
+        'count': 8,
+        'roles': ['gluster_server'],
+        'profile': 'centos65_monash',
+        'volumes': [{
+                'name': 'gluster',
+                'size': 1}]
+    },
 }
+    return servers
 
+
+def write_userdata_file(filename,configname,domain):
+    f=open(filename,'w')
+    f.write('hostname: %s\n'%configname)
+    f.write('fqdn: %s.%s\n'%(configname,domain))
+    f.close()
 
 def run():
     config = {}
+    try:
+        deployment = salt['grains.get']('deployment')
+        domain = salt['grains.get']('domain')
+        master = grains['ipv4'][0]
+    except:
+        deployment="test"
+        domain="localdomain"
+        master = "localhost"
+
+    if deployment == None or deployment == '':
+      deployment = 'test'
+    domain="massive.org.au"
+    servers=get_servers(deployment)
     for name, conf in servers.iteritems():
         count = conf.get('count', 1)
         for i in range(0, count):
@@ -52,29 +58,27 @@ def run():
                                         name,
                                         i)
             roles = conf['roles']
-            if 'single_roles' in conf:
-                if i == count:
-                    while len(conf['single_roles']) > 0:
-                        roles.append(conf['single_roles'].pop())
-                else:
-                    roles.append(conf['single_roles'].pop())
             profile_name = '%s' % (conf['profile'])
+            userdata_file = "/tmp/"+config_name+"-cloud-config.txt"
+            write_userdata_file(userdata_file,config_name,domain)
             config[config_name] = {
                 'cloud': [
                     'profile',
                     {'profile': profile_name},
                     {'cloud_provider': cloud_provider},
                     {'availability_zone': availability_zone},
+                    {'userdata_file:':userdata_file},
                     {'minion': {
                         'grains': {
                             'deployment': deployment,
+                            'domain': domain,
                             'roles': roles,
                         },
-                        'master': grains['ipv4'][0]
+                        'master': master
                     }},
                 ]}
             for vol in conf.get('volumes', []):
-                volname = "%s-%s-%s" % (deployment, vol['name'],count)
+                volname = "%s-%s-%s" % (deployment, vol['name'],i)
                 config[volname + '-vol-present'] = {
                     'cloud.volume_present': [
                         {'name': volname},
@@ -96,3 +100,9 @@ def run():
                          },
                     ]}
     return config
+
+if __name__ == "__main__":
+    config=run()
+    for k in config.keys():
+        print config[k]
+

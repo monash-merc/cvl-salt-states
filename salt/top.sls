@@ -1,19 +1,41 @@
 base:
   '*':
-     - ssh_server
+     - sshtunnel
+     - etc_sysconfig_network
+     - hosts
 
-  'salt-master':
-     - cloud_state
+  'roles:config-managment':
+     - match: grain
      - ssh_ca
 
-  'roles:strudel_build':
-     - match: grain
-     - strudel_build
+#  'roles:strudel_build':
+#     - match: grain
+#     - strudel_build
+#
+#  'roles:vncserver':
+#     - match: grain
+#     - vncserver
+#
+#  'roles:nfs':
+#     - match: grain
+#     - nfs
 
-  'roles:vncserver':
+  'roles:desktop':
      - match: grain
-     - vncserver
+     - desktop
+     - munge
+     - massive_ldap_client
 
-  'roles:nfs':
+  'roles:scheduler':
      - match: grain
-     - nfs
+     - munge
+     - massive_ldap_client
+
+  'roles:share_home':
+     - match: grain
+     - share_home
+     - massive_ldap_client
+
+  'roles:massive_ldap_tunnel':
+     - match: grain
+     - massive_ldap_tunnel
