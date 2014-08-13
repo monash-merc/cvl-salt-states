@@ -50,3 +50,20 @@ make_rpm:
       - cmd: get_source
     - unless: ls /root/rpmbuild/RPMS/x86_64/slurm*rpm
 
+slurm_installed:
+  pkg.installed:
+    - source:
+      - slurm: /root/rpmbuild/RPMS/x86_64/slurm-14.03.6-1.el6.x86_64.rpm
+      - slurm-devel: /root/rpmbuild/RPMS/x86_64/slurm-devel-14.03.6-1.el6.x86_64.rpm
+      - slurm-munge: /root/rpmbuild/RPMS/x86_64/slurm-munge-14.03.6-1.el6.x86_64.rpm
+      - slurm-pam_slurm: /root/rpmbuild/RPMS/x86_64/slurm-pam_slurm-14.03.6-1.el6.x86_64.rpm
+      - slurm-perlapi: /root/rpmbuild/RPMS/x86_64/slurm-perlapi-14.03.6-1.el6.x86_64.rpm
+      - slurm-plugins: /root/rpmbuild/RPMS/x86_64/slurm-plugins-14.03.6-1.el6.x86_64.rpm
+      - slurm-sjobexit: /root/rpmbuild/RPMS/x86_64/slurm-sjobexit-14.03.6-1.el6.x86_64.rpm
+      - slurm-sjstat: /root/rpmbuild/RPMS/x86_64/slurm-sjstat-14.03.6-1.el6.x86_64.rpm
+      - slurm-slurmdbd: /root/rpmbuild/RPMS/x86_64/slurm-slurmdbd-14.03.6-1.el6.x86_64.rpm
+      - slurm-slurmdb-direct: /root/rpmbuild/RPMS/x86_64/slurm-slurmdb-direct-14.03.6-1.el6.x86_64.rpm
+      - slurm-sql: /root/rpmbuild/RPMS/x86_64/slurm-sql-14.03.6-1.el6.x86_64.rpm
+      - slurm-torque: /root/rpmbuild/RPMS/x86_64/slurm-torque-14.03.6-1.el6.x86_64.rpm
+      - require:
+        - cmd: make_rpm
